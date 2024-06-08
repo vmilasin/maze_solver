@@ -70,6 +70,10 @@ class TestCell(unittest.TestCase):
         self.cell2.break_wall("bottom")
         self.cell4.break_wall("top", "right")
 
+        # Move between cells
+        self.cell1.draw_move(self.cell2)
+        self.cell2.draw_move(self.cell4)
+
     def tearDown(self):
         # Called after every test to clean up
         del self.win
@@ -79,6 +83,7 @@ class TestCell(unittest.TestCase):
         del self.cell3
         del self.cell4
 
+    
     def test_create_cells(self):
         expected_create_calls = [
             call.create_line(0, 0, 0, 40, fill="black", width=2),       # c1 left wall
@@ -110,6 +115,13 @@ class TestCell(unittest.TestCase):
         ]
         self.win.canvas.delete.assert_has_calls(expected_delete_calls, any_order=True)
 
+    
+    def test_move_to_cell(self):
+        expected_move_calls = [
+            call.create_line(20, 20, 60, 20, fill="red", width=2), 
+            call.create_line(60, 20, 60, 60, fill="red", width=2),    
+        ]
+        self.win.canvas.create_line.assert_has_calls(expected_move_calls, any_order=True)
 
 
 

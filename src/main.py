@@ -25,6 +25,10 @@ def main():
     cell2.break_wall("bottom")
     cell4.break_wall("top", "right")
 
+    cell1.draw_move(cell2)
+    cell2.draw_move(cell3)
+    cell3.draw_move(cell4)
+
     win.wait_for_close()
 
 main()
