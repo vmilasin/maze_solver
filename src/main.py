@@ -1,20 +1,30 @@
-from window import Window, Point, Line
+from window import Window, Point, Cell
 
 def main():
     win = Window(800, 600)
-    point1 = Point(20, 60)
-    point2 = Point(40, 80)
-    point3 = Point(80, 40)
-    point4 = Point(120, 20)
-    point5 = Point(20, 120)
-    line1 = Line(point1, point3)
-    line2 = Line(point2, point4)
-    line3 = Line(point3, point5)
-    line4 = Line(point5, point1)
-    win.draw_line(line1, "black")
-    win.draw_line(line2, "red")
-    win.draw_line(line3, "yellow")
-    win.draw_line(line4, "black")
+    point1 = Point(0, 0)
+    point2 = Point(40, 0)
+    point3 = Point(80, 0)
+    point4 = Point(0, 40)
+    point5 = Point(40, 40)
+    point6 = Point(80, 40)
+    point7 = Point(0, 80)
+    point8 = Point(40, 80)
+    point9 = Point(80, 80)
+
+    cell1 = Cell(point1, point5, win)
+    cell2 = Cell(point2, point6, win)
+    cell3 = Cell(point4, point8, win)
+    cell4 = Cell(point5, point9, win)
+
+    cells = [cell1, cell2, cell3, cell4]
+    for cell in cells:
+        cell.draw()
+
+    cell1.break_wall("right")
+    cell2.break_wall("bottom")
+    cell4.break_wall("top", "right")
+
     win.wait_for_close()
 
 main()
