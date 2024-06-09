@@ -1,8 +1,8 @@
-from window import Window, Point, Cell
+from window import Window, Point, Cell, Maze
 
 def main():
     win = Window(800, 600)
-    point1 = Point(0, 0)
+    '''point1 = Point(0, 0)
     point2 = Point(40, 0)
     point3 = Point(80, 0)
     point4 = Point(0, 40)
@@ -27,7 +27,10 @@ def main():
 
     cell1.draw_move(cell2)
     cell2.draw_move(cell3)
-    cell3.draw_move(cell4)
+    cell3.draw_move(cell4)'''
+    
+    maze = Maze(40, 40, win)
+    maze._create_cells()
 
     win.wait_for_close()
 

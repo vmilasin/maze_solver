@@ -123,6 +123,10 @@ class TestCell(unittest.TestCase):
         ]
         self.win.canvas.create_line.assert_has_calls(expected_move_calls, any_order=True)
 
+    def test_move_to_cell(self):
+        with self.assertRaises(TypeError):
+            self.cell1.draw_move("INVALID TYPE")      
+
 
 
 
