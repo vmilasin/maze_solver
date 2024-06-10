@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, call
-from window import Window, Point, Line, Cell
+from window import Window, Point, Line, Cell, Maze
 
 class TestPoint(unittest.TestCase):
     def test_point_creation(self):
@@ -121,14 +121,40 @@ class TestCell(unittest.TestCase):
             call.create_line(20, 20, 60, 20, fill="red", width=2), 
             call.create_line(60, 20, 60, 60, fill="red", width=2),    
         ]
-        self.win.canvas.create_line.assert_has_calls(expected_move_calls, any_order=True)
-
-    def test_move_to_cell(self):
-        with self.assertRaises(TypeError):
-            self.cell1.draw_move("INVALID TYPE")      
+        self.win.canvas.create_line.assert_has_calls(expected_move_calls, any_order=True) 
 
 
+class TestMaze(unittest.TestCase):
+    def setUp(self):
+        self.window = Window(80, 40)
+        self.mock_canvas = Mock()
+        self.window.canvas = self.mock_canvas
+        self.maze = Maze(20, 20, self.window)
+        self.maze._create_cells()
+        self.maze._break_entrance_and_exit()
 
+    def tearDown(self):
+        del self.window
+        del self.mock_canvas
+        del self.maze
+
+    def test_maze_create(self):        
+        self.assertEqual(self.maze._num_cols, 4)
+        self.assertEqual(self.maze._num_rows, 2)
+
+    def test_maze_draw(self):            
+        expected_move_calls = []
+        for col in self.maze.cols:
+            for row in col:
+                expected_move_calls.append(call.create_line(row._top_left.x, row._top_left.y, row._bottom_left.x, row._bottom_left.y, fill="black", width=2))               
+                expected_move_calls.append(call.create_line(row._top_right.x, row._top_right.y, row._bottom_right.x, row._bottom_right.y, fill="black", width=2))           
+                expected_move_calls.append(call.create_line(row._top_left.x, row._top_left.y, row._top_right.x, row._top_right.y, fill="black", width=2))
+                expected_move_calls.append(call.create_line(row._bottom_left.x, row._bottom_left.y, row._bottom_right.x, row._bottom_right.y, fill="black", width=2)) 
+        self.window.canvas.create_line.assert_has_calls(expected_move_calls, any_order=True)
+
+    def test_maze_break_start_and_end(self):
+        self.assertEqual(self.maze.cols[0][0].left_wall, False)
+        self.assertEqual(self.maze.cols[-1][-1].right_wall, False)
 
 
 

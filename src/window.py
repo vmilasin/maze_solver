@@ -10,10 +10,11 @@ class Window:
         self.canvas = Canvas(self.__root, width=width, height=height, borderwidth=0, highlightthickness=0)              # Create a widget for drawing graphics (borders are part of the coordinate space, so remove them to see the outer lines)
         self.canvas.pack()                                          # Pack the widget into the root window
         self.__running = False                                      # Define the app's running state
-        self._width = width
+        # Width and height attributes are used to calculate the number of columns and rows (see Maze class) 
+        self._width = width                                         
         self._height = height
 
-    def redraw(self):
+    def redraw(self):                                             # Displays everything that was drawn on the window until called
         self.__root.update_idletasks()                            # Process all pending idle tasks, without processing any other events
         self.__root.update()                                      # Process all pending events, call event callbacks, complete any pending geometry management, redraw widgets as necessary, and call all pending idle tasks
 
@@ -63,15 +64,15 @@ class Cell:
         self._top_left = Point(starting_point.x, starting_point.y)
         self._top_right = Point(ending_point.x, starting_point.y)
         self._bottom_left = Point(starting_point.x, ending_point.y)
-        self._botom_right = Point(ending_point.x, ending_point.y)
+        self._bottom_right = Point(ending_point.x, ending_point.y)       
 
         # Define the Cell's center - to be used when drawing paths between Cells
         self._center = Point(((ending_point.x - starting_point.x) // 2) + starting_point.x, ((ending_point.y - starting_point.y) // 2) + starting_point.y)
 
         self._left_wall = Line(self._top_left, self._bottom_left)
-        self._right_wall = Line(self._top_right, self._botom_right)
+        self._right_wall = Line(self._top_right, self._bottom_right)         
         self._top_wall = Line(self._top_left, self._top_right)
-        self._bottom_wall = Line(self._bottom_left, self._botom_right)
+        self._bottom_wall = Line(self._bottom_left, self._bottom_right)      
 
         self.window = window
         self.__canvas = self.window.canvas        
@@ -116,9 +117,6 @@ class Cell:
                 raise Exception("Invalid argument or wall already broken. Arguments can be 'left', 'right', 'top' and/or 'bottom'.")
             
     def draw_move(self, to_cell, undo=False):
-        if type(to_cell) != Cell:
-            raise TypeError("Please provide a valid cell destination to move to.")
-
         if undo == False:
             self._move_color = "red"
         else:
@@ -126,10 +124,9 @@ class Cell:
 
         # Create a path from this cell to one applied as a parameter (to_cell)
         self.move_to_cell_id = Line(self._center, to_cell._center).draw(self.__canvas, self._move_color)
-
     
     def __repr__(self):
-        return f"Cell: top_left:{self._top_left}, top_right:{self._top_right}, bottom_left:{self._bottom_left}, bottom_right:{self._botom_right}"
+        return f"Cell: TL:({self._top_left.x}, {self._top_left.y}), TR:({self._top_right.x}, {self._top_right.y}), BL:({self._bottom_left.x}, {self._bottom_left.y}), BR:({self._bottom_right.x}, {self._bottom_right.y})"
 
 
 
@@ -165,3 +162,14 @@ class Maze:
     def _animate(self):
         self.window.redraw()            # Redraw the window / "Show what was drawn so far"
         sleep(0.05)                     # Sleep to slow down the animation to a human-visible speed
+
+
+    def _break_entrance_and_exit(self):
+        self._animate()
+        self.cols[0][0].break_wall("left")
+        self._animate()
+        self.cols[-1][-1].break_wall("right")
+        self._animate()
+
+    def __repr__(self):
+        return f"Maze: width: {self.window._width}px, height: {self.window._height}px. No. columns:{self._num_cols}, no. rows:{self._num_rows}"
