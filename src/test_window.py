@@ -144,7 +144,7 @@ class TestMaze(unittest.TestCase):
 
     def test_maze_draw(self):            
         expected_move_calls = []
-        for col in self.maze.cols:
+        for col in self.maze._cells:
             for row in col:
                 expected_move_calls.append(call.create_line(row._top_left.x, row._top_left.y, row._bottom_left.x, row._bottom_left.y, fill="black", width=2))               
                 expected_move_calls.append(call.create_line(row._top_right.x, row._top_right.y, row._bottom_right.x, row._bottom_right.y, fill="black", width=2))           
@@ -153,8 +153,8 @@ class TestMaze(unittest.TestCase):
         self.window.canvas.create_line.assert_has_calls(expected_move_calls, any_order=True)
 
     def test_maze_break_start_and_end(self):
-        self.assertEqual(self.maze.cols[0][0].left_wall, False)
-        self.assertEqual(self.maze.cols[-1][-1].right_wall, False)
+        self.assertEqual(self.maze._cells[0][0].left_wall, False)
+        self.assertEqual(self.maze._cells[-1][-1].right_wall, False)
 
 
 

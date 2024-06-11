@@ -1,7 +1,7 @@
 from window import Window, Point, Cell, Maze
 
 def main():
-    win = Window(80, 60)
+    win = Window(800, 640)
     '''point1 = Point(0, 0)
     point2 = Point(40, 0)
     point3 = Point(80, 0)
@@ -29,9 +29,11 @@ def main():
     cell2.draw_move(cell3)
     cell3.draw_move(cell4)'''
     
-    maze = Maze(20, 20, win)
+    maze = Maze(80, 80, win)
     maze._create_cells()
     maze._break_entrance_and_exit()
+    maze._break_walls_r()
+    maze._solve()
 
     win.wait_for_close()
 
