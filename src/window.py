@@ -168,6 +168,10 @@ class Maze:
         self.window.redraw()            # Redraw the window / "Show what was drawn so far"
         sleep(0.05)                     # Sleep to slow down the animation to a human-visible speed
 
+    def _animate_slow(self):
+        self.window.redraw()            # Redraw the window / "Show what was drawn so far"
+        sleep(0.1)                     # Sleep to slow down the animation to a human-visible speed
+
 
     def _break_entrance_and_exit(self):
         self._animate()
@@ -235,39 +239,51 @@ class Maze:
         queue.append((i, j))
         self._cells[i][j].visited = True
 
+        predecessors = {}
+
+        self.finished = False
+
         while queue:
             # Dequeue the cell, get current values            
             current_i, current_j = queue.popleft()
 
             # Check if this is the goal
             if (current_i, current_j) == (self._num_cols - 1, self._num_rows - 1):
-                return True
+                self.finished = True
             
             # Otherwise, look for neighbours, add them to queue and draw the moves 
             else:
+                valid_moves = []
                 draw_lambda = lambda neighbbour: self._cells[current_i][current_j].draw_move(neighbbour)
 
                 if current_i < self._num_cols - 1 and not self._cells[current_i + 1][current_j].visited and self._cells[current_i][current_j].right_wall is False:
-                    self._cells[current_i+1][current_j].visited = True  
-                    queue.append((current_i + 1, current_j))
-                    draw_lambda(self._cells[current_i + 1][current_j])
+                    next_cell = self._cells[current_i+1][current_j]
+                    next_cell.visited = True
+                    draw_lambda(next_cell)  
+                    valid_moves.append((current_i + 1, current_j))
+
                 if current_i > 0 and not self._cells[current_i - 1][current_j].visited and self._cells[current_i][current_j].left_wall is False:
-                    self._cells[current_i-1][current_j].visited = True                             
-                    queue.append((current_i - 1, current_j))
-                    draw_lambda(self._cells[current_i - 1][current_j])
+                    next_cell = self._cells[current_i-1][current_j]
+                    next_cell.visited = True
+                    draw_lambda(next_cell)
+                    valid_moves.append((current_i - 1, current_j))
+
                 if current_j < self._num_rows - 1 and not self._cells[current_i][current_j + 1].visited and self._cells[current_i][current_j].bottom_wall is False:
-                    self._cells[current_i][current_j+1].visited = True          
-                    queue.append((current_i, current_j + 1))
-                    draw_lambda(self._cells[current_i][current_j + 1])
+                    next_cell = self._cells[current_i][current_j+1]
+                    next_cell.visited = True
+                    draw_lambda(next_cell)
+                    valid_moves.append((current_i, current_j + 1))
+
                 if current_j > 0 and not self._cells[current_i][current_j - 1].visited and self._cells[current_i][current_j].top_wall is False:
-                    self._cells[current_i][current_j-1].visited = True
-                    queue.append((current_i, current_j - 1))
-                    draw_lambda(self._cells[current_i][current_j - 1])
+                    next_cell = self._cells[current_i][current_j-1]
+                    next_cell.visited = True
+                    draw_lambda(next_cell)
+                    valid_moves.append((current_i, current_j - 1))
 
-        return False  
+                for move in valid_moves:
+                    queue.append(move)                
 
-
-    
+        return self.finished    
             
 
 

@@ -29,7 +29,7 @@ def main():
     cell2.draw_move(cell3)
     cell3.draw_move(cell4)'''
     
-    maze = Maze(80, 80, win)
+    maze = Maze(120, 120, win)
     maze._create_cells()
     maze._break_entrance_and_exit()
     maze._break_walls_r()
